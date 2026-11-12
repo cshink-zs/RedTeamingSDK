@@ -72,8 +72,9 @@ step is needed.
 
 ### GitHub Actions
 
-Add the values under **Settings → Secrets and variables → Actions**, then
-reference them from a workflow step:
+Add the values under **Settings → Secrets and variables → Actions**. A ready
+to use workflow is included at
+[`.github/workflows/red-teaming-scan.yml`](.github/workflows/red-teaming-scan.yml):
 
 ```yaml
 name: AI Red Teaming scan
