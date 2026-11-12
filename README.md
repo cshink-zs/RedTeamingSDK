@@ -48,3 +48,12 @@ Alternatively, with plain Docker:
 docker build -t redteamingsdk .
 docker run --env-file .env redteamingsdk
 ```
+
+## Running the prebuilt image (no build required)
+
+A prebuilt image is published at `cshink837/trigger_test_run:latest`. Just
+supply the environment variables from a local `.env` file:
+
+```bash
+docker run --env-file .env cshink837/trigger_test_run:latest
+```
