@@ -1,0 +1,10 @@
+services:
+  redteamingsdk:
+    build: .
+    container_name: trigger_test_run
+    environment:
+        OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
+        OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
+        OAUTH_TOKEN_URL: ${OAUTH_TOKEN_URL}
+        TARGET_ID: ${TARGET_ID}
+        TEST_RUN_NAME: ${TEST_RUN_NAME}
