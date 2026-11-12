@@ -3,6 +3,10 @@
 Triggers a Zscaler AI Red Teaming test run: it fetches the probes currently
 enabled for a given AI app, then starts a new test run against all of them.
 
+Designed to be dropped into a CI/CD pipeline as a single step (either running
+the Docker image or the script directly) so a red teaming scan runs
+automatically, e.g. after deploying a new version of an AI app.
+
 ## How it works
 
 1. Exchanges your OAuth client credentials for an access token
@@ -57,3 +61,65 @@ supply the environment variables from a local `.env` file:
 ```bash
 docker run --env-file .env cshink837/trigger_test_run:latest
 ```
+
+## Using it in a CI/CD pipeline
+
+In CI, store `OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`, `OAUTH_TOKEN_URL`,
+`TARGET_ID`, and `TEST_RUN_NAME` as secrets/masked variables in the
+pipeline's settings — don't check them into the repo. Each example below
+runs the prebuilt image (`cshink837/trigger_test_run:latest`), so no build
+step is needed.
+
+### GitHub Actions
+
+Add the values under **Settings → Secrets and variables → Actions**, then
+reference them from a workflow step:
+
+```yaml
+name: AI Red Teaming scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  trigger-scan:
+    runs-on: ubuntu-latest
+    container:
+      image: cshink837/trigger_test_run:latest
+    env:
+      OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+      OAUTH_TOKEN_URL: ${{ secrets.OAUTH_TOKEN_URL }}
+      TARGET_ID: ${{ secrets.TARGET_ID }}
+      TEST_RUN_NAME: ${{ github.run_id }}
+    steps:
+      - name: Trigger red teaming test run
+        run: python main.py
+```
+
+Running the image via `container:` means the job executes directly inside
+it, so no `docker run`/`docker pull` step is required — GitHub Actions
+handles pulling the image and injecting the `env:` values.
+
+### GitLab CI
+
+Add the values under **Settings → CI/CD → Variables** (masked and
+protected), then reference them from a job that uses the image directly:
+
+```yaml
+trigger-scan:
+  image: cshink837/trigger_test_run:latest
+  stage: test
+  variables:
+    TEST_RUN_NAME: "$CI_PIPELINE_ID"
+  script:
+    - python main.py
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+```
+
+`OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`, `OAUTH_TOKEN_URL`, and `TARGET_ID`
+come from the CI/CD variables configured in the project settings and are
+automatically exposed as environment variables inside the job.
