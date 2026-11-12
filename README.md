@@ -87,22 +87,24 @@ on:
 jobs:
   trigger-scan:
     runs-on: ubuntu-latest
-    container:
-      image: cshink837/trigger_test_run:latest
-    env:
-      OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
-      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
-      OAUTH_TOKEN_URL: ${{ secrets.OAUTH_TOKEN_URL }}
-      TARGET_ID: ${{ secrets.TARGET_ID }}
-      TEST_RUN_NAME: ${{ github.run_id }}
     steps:
       - name: Trigger red teaming test run
-        run: python main.py
+        run: |
+          docker run --rm \
+            -e OAUTH_CLIENT_ID="${{ secrets.OAUTH_CLIENT_ID }}" \
+            -e OAUTH_CLIENT_SECRET="${{ secrets.OAUTH_CLIENT_SECRET }}" \
+            -e OAUTH_TOKEN_URL="${{ secrets.OAUTH_TOKEN_URL }}" \
+            -e TARGET_ID="${{ secrets.TARGET_ID }}" \
+            -e TEST_RUN_NAME="${{ github.run_id }}" \
+            cshink837/trigger_test_run:latest
 ```
 
-Running the image via `container:` means the job executes directly inside
-it, so no `docker run`/`docker pull` step is required — GitHub Actions
-handles pulling the image and injecting the `env:` values.
+This runs the image with plain `docker run` on the (Docker-preinstalled)
+`ubuntu-latest` runner, rather than as a job-level `container:`. Job-level
+containers don't keep running after the image's own `CMD` finishes, so a
+later step trying to `exec` into it (e.g. a separate `run: python main.py`
+step) would fail with "container is not running" — `docker run` avoids that
+by executing the whole thing as a single, self-contained step.
 
 ### GitLab CI
 
