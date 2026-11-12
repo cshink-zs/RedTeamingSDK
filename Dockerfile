@@ -13,6 +13,6 @@ COPY main.py .
 
 # Required at runtime via `docker run -e` / `--env-file`:
 #   OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_URL,
-#   PROBE_ID, TARGET_ID, TEST_RUN_NAME
+#   TARGET_ID, TEST_RUN_NAME
 
 CMD ["python", "main.py"]
