@@ -1,0 +1,10 @@
+image: cshink837/trigger_test_run:latest
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Trigger red teaming test run
+          script:
+            - export TEST_RUN_NAME="bitbucket-$BITBUCKET_BUILD_NUMBER"
+            - python main.py

@@ -172,3 +172,29 @@ This requires the Jenkins agent running the pipeline to have Docker
 installed and accessible to the `jenkins` user — unlike GitHub-hosted or
 GitLab SaaS runners, a Jenkins agent's environment is whatever you
 provisioned it with.
+
+### Bitbucket Pipelines
+
+Add the values under **Repository settings → Repository variables** (marked
+Secured). A ready to use pipeline is included at
+[`bitbucket-pipelines.yml`](bitbucket-pipelines.yml), at the repo root —
+Bitbucket looks for this file there by default:
+
+```yaml
+image: cshink837/trigger_test_run:latest
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Trigger red teaming test run
+          script:
+            - export TEST_RUN_NAME="bitbucket-$BITBUCKET_BUILD_NUMBER"
+            - python main.py
+```
+
+`OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`, `OAUTH_TOKEN_URL`, and `TARGET_ID`
+come from the repository variables and are automatically exposed as
+environment variables inside the step. Bitbucket runs the step's `script`
+directly inside the pipeline image's container (the same model as GitLab),
+so there's no job-level `container:` lifecycle issue like in GitHub Actions.
