@@ -1,4 +1,4 @@
-# RedTeamingSDK
+# Zscaler AI Red teaming CICD integration 
 
 Triggers a Zscaler AI Red Teaming test run: it fetches the probes currently
 enabled for a given AI app, then starts a new test run against all of them.
