@@ -31,12 +31,15 @@ Set these as environment variables (e.g. in a local `.env` file):
 
 ## Running locally
 
+A prebuilt image is published at `cshink837/trigger_test_run:latest`. Just
+supply the environment variables from a local `.env` file — no build
+required:
+
 ```bash
-pip install -r requirements.txt
-python main.py
+docker run --env-file .env cshink837/trigger_test_run:latest
 ```
 
-## Running with Docker
+## Building and running from source
 
 ```bash
 docker compose up --build
@@ -53,13 +56,11 @@ docker build -t redteamingsdk .
 docker run --env-file .env redteamingsdk
 ```
 
-## Running the prebuilt image (no build required)
-
-A prebuilt image is published at `cshink837/trigger_test_run:latest`. Just
-supply the environment variables from a local `.env` file:
+Or without Docker at all:
 
 ```bash
-docker run --env-file .env cshink837/trigger_test_run:latest
+pip install -r requirements.txt
+python main.py
 ```
 
 ## Using it in a CI/CD pipeline
