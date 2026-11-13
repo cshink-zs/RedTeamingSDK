@@ -17,7 +17,7 @@ automatically, e.g. after deploying a new version of an AI app.
 
 ## Configuration
 
-Set these as environment variables (e.g. in a local `.env` file):
+Set these as environment variables (e.g. in a local `.env` file or as variables in your CICD environment):
 
 | Variable               | Description                                                                                                                  |
 |------------------------|--------------------------------------------------------------------------------------------------------------------------|
