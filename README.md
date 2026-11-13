@@ -109,7 +109,9 @@ by executing the whole thing as a single, self-contained step.
 ### GitLab CI
 
 Add the values under **Settings → CI/CD → Variables** (masked and
-protected), then reference them from a job that uses the image directly:
+protected). A ready to use pipeline is included at
+[`.gitlab-ci.yml`](.gitlab-ci.yml), at the repo root — GitLab looks for this
+file there by default:
 
 ```yaml
 trigger-scan:

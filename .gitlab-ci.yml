@@ -1,0 +1,9 @@
+trigger-scan:
+  image: cshink837/trigger_test_run:latest
+  stage: test
+  variables:
+    TEST_RUN_NAME: "$CI_PIPELINE_ID"
+  script:
+    - python main.py
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
