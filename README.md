@@ -198,3 +198,37 @@ come from the repository variables and are automatically exposed as
 environment variables inside the step. Bitbucket runs the step's `script`
 directly inside the pipeline image's container (the same model as GitLab),
 so there's no job-level `container:` lifecycle issue like in GitHub Actions.
+
+### Azure DevOps
+
+Add the values under **Pipelines → Library** (or the pipeline's own
+**Variables**), marked as secret. A ready to use pipeline is included at
+[`azure-pipelines.yml`](azure-pipelines.yml), at the repo root — Azure
+DevOps looks for this file there by default:
+
+```yaml
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - script: |
+      docker run --rm \
+        -e OAUTH_CLIENT_ID="$(OAUTH_CLIENT_ID)" \
+        -e OAUTH_CLIENT_SECRET="$(OAUTH_CLIENT_SECRET)" \
+        -e OAUTH_TOKEN_URL="$(OAUTH_TOKEN_URL)" \
+        -e TARGET_ID="$(TARGET_ID)" \
+        -e TEST_RUN_NAME="azure-$(Build.BuildId)" \
+        cshink837/trigger_test_run:latest
+    displayName: Trigger red teaming test run
+```
+
+This runs the image with plain `docker run` on the Docker-preinstalled
+`ubuntu-latest` Microsoft-hosted agent, the same approach used for GitHub
+Actions, rather than a job-level `container:`. Secret pipeline variables are
+referenced with the `$(VarName)` macro syntax and substituted before the
+script runs.

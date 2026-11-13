@@ -1,0 +1,18 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - script: |
+      docker run --rm \
+        -e OAUTH_CLIENT_ID="$(OAUTH_CLIENT_ID)" \
+        -e OAUTH_CLIENT_SECRET="$(OAUTH_CLIENT_SECRET)" \
+        -e OAUTH_TOKEN_URL="$(OAUTH_TOKEN_URL)" \
+        -e TARGET_ID="$(TARGET_ID)" \
+        -e TEST_RUN_NAME="azure-$(Build.BuildId)" \
+        cshink837/trigger_test_run:latest
+    displayName: Trigger red teaming test run
