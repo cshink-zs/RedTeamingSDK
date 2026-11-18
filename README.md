@@ -7,6 +7,23 @@ Designed to be dropped into a CI/CD pipeline as a single step (either running
 the Docker image or the script directly) so a red teaming scan runs
 automatically, e.g. after deploying a new version of an AI app.
 
+## Getting your API credentials
+
+1. Log in to the [Zscaler Experience Center](https://experience.zscaler.com).
+2. Navigate to **API Resource Center → API Clients** (or wherever API clients
+   are managed for your tenant).
+3. Click **Add API Client**, give it a name (e.g. `redteaming-cicd`), and
+   assign it the **Red Teaming Admin** scope.
+4. Save it — Zscaler will show a **Client ID** and **Client Secret**. Copy
+   the secret immediately; it's usually only shown once.
+5. Note your tenant's OAuth token endpoint:
+   `https://[your-tenant-id].zslogin.net/oauth2/v1/token`.
+6. Find your AI app's `TARGET_ID` under **Red Teaming → AI Apps** — it's
+   shown in the app's details or its URL.
+
+Put these values in a local `.env` file (see [Configuration](#configuration)
+below) or in your CI/CD platform's secret store.
+
 ## How it works
 
 1. Exchanges your OAuth client credentials for an access token
